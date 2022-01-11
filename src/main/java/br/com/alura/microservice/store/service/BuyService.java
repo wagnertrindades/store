@@ -6,24 +6,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import br.com.alura.microservice.store.client.ProviderClient;
 import br.com.alura.microservice.store.controller.dto.BuyDTO;
 import br.com.alura.microservice.store.controller.dto.InfoProviderDTO;
 
 @Service
 public class BuyService {
-	
-	@Autowired
-	private RestTemplate client;
 
+	@Autowired
+	private ProviderClient providerClient;
+	
 	public void processBuy(BuyDTO buy) {
 		
-		String state = buy.getAddress().getState();
+		InfoProviderDTO info = providerClient.getInfoByState(buy.getAddress().getState());
 		
-		ResponseEntity<InfoProviderDTO> exchange = 
-				client.exchange("http://provider/info/" + state, HttpMethod.GET, null, InfoProviderDTO.class);
-		
-		System.out.println(exchange.getBody().getAddress());
-		
+		System.out.println(info.getAddress());
 	}
 
 }
