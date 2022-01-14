@@ -10,12 +10,15 @@ public class BuyDTO {
 	public List<BuyItensDTO> getItens() {
 		return itens;
 	}
+	
 	public void setItens(List<BuyItensDTO> itens) {
 		this.itens = itens;
 	}
+	
 	public AddressDTO getAddress() {
 		return address;
 	}
+	
 	public void setAddress(AddressDTO address) {
 		this.address = address;
 	}

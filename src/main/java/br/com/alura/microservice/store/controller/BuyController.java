@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.alura.microservice.store.controller.dto.BuyDTO;
+import br.com.alura.microservice.store.model.Buy;
 import br.com.alura.microservice.store.service.BuyService;
 
 @RestController
@@ -17,7 +18,7 @@ public class BuyController {
 	private BuyService buyService;
 	
 	@PostMapping
-	private void processBuy(@RequestBody BuyDTO buy) {
-		buyService.processBuy(buy);
+	private Buy processBuy(@RequestBody BuyDTO buy) {
+		return buyService.processBuy(buy);
 	}
 }
