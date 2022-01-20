@@ -9,3 +9,32 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+resilience4j.circuitbreaker:
+    configs:
+        default:
+            registerHealthIndicator: true
+            slidingWindowType: COUNT_BASED
+            slidingWindowSize: 1
+            minimumNumberOfCalls: 1
+            permittedNumberOfCallsInHalfOpenState: 1
+            automaticTransitionFromOpenToHalfOpenEnabled: true
+            waitDurationInOpenState: 1s
+            failureRateThreshold: 50
+            eventConsumerBufferSize: 10
+    instances:
+        buyService:
+            baseConfig: default
+
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
