@@ -9,15 +9,23 @@ import br.com.alura.microservice.store.controller.dto.BuyDTO;
 import br.com.alura.microservice.store.controller.dto.InfoOrderDTO;
 import br.com.alura.microservice.store.controller.dto.InfoProviderDTO;
 import br.com.alura.microservice.store.model.Buy;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 
 @Service
 public class BuyService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(BuyService.class);
 	
+	private static final String BUY_SERVICE = "buyService";
+	
 	@Autowired
 	private ProviderClient providerClient;
 	
+	@TimeLimiter(name= BUY_SERVICE)
+	@CircuitBreaker(name= BUY_SERVICE, fallbackMethod= "processBuyFallback")
+	@Retry(name= BUY_SERVICE)
 	public Buy processBuy(BuyDTO buy) {
 		
 		final String state = buy.getAddress().getState();
@@ -34,6 +42,15 @@ public class BuyService {
 		buyObject.setDestinyAddress(buy.getAddress().toString());
 		
 		return buyObject;
+	}
+	
+	public Buy processBuyFallback(BuyDTO buy, Exception ex) {
+		LOG.info("calling processBuyFallback and returning default buy data");
+		
+		Buy buyFallback = new Buy();
+		buyFallback.setDestinyAddress(buy.getAddress().toString());
+		
+		return buyFallback;
 	}
 
 }
