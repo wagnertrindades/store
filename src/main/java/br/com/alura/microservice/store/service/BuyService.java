@@ -9,6 +9,7 @@ import br.com.alura.microservice.store.controller.dto.BuyDTO;
 import br.com.alura.microservice.store.controller.dto.InfoOrderDTO;
 import br.com.alura.microservice.store.controller.dto.InfoProviderDTO;
 import br.com.alura.microservice.store.model.Buy;
+import br.com.alura.microservice.store.repository.BuyRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
@@ -22,6 +23,9 @@ public class BuyService {
 	
 	@Autowired
 	private ProviderClient providerClient;
+	
+	@Autowired
+	private BuyRepository buyRepository;
 	
 	@TimeLimiter(name= BUY_SERVICE)
 	@CircuitBreaker(name= BUY_SERVICE, fallbackMethod= "processBuyFallback")
@@ -40,6 +44,8 @@ public class BuyService {
 		buyObject.setOrderId(order.getId());
 		buyObject.setPreparationTime(order.getPreparationTime());
 		buyObject.setDestinyAddress(buy.getAddress().toString());
+		
+		buyRepository.save(buyObject);
 		
 		return buyObject;
 	}
