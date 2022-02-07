@@ -1,7 +1,12 @@
 package br.com.alura.microservice.store.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Buy {
 	
+	@Id
 	private Long orderId;
 	
 	private Integer preparationTime;
